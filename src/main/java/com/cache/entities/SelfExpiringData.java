@@ -1,4 +1,4 @@
-package entities;
+package com.cache.entities;
 
 import java.time.Duration;
 

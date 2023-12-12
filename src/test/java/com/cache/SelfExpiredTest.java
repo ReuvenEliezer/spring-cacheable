@@ -1,24 +1,23 @@
-package Tests;
+package com.cache;
 
-import app.TestApp;
-import entities.SelfExpiringData;
-import org.apache.log4j.Logger;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import com.cache.entities.SelfExpiringData;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 import utils.WsAddressConstants;
 
 import java.time.Duration;
 
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = TestApp.class)
-public class SelfExpiredTest {
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = CacheApp.class)
+class SelfExpiredTest {
 
-    private static final Logger logger = Logger.getLogger(SelfExpiredTest.class.getName());
+    private static final Logger logger = LogManager.getLogger(SelfExpiredTest.class);
+
     @Autowired
     private RestTemplate restTemplate;
 
@@ -29,8 +28,8 @@ public class SelfExpiredTest {
 //    }
 
     @Test
-    public void ExpiredTest() {
-//        logger.debug("start, Thread ID:" + Thread.currentThread().getId());
+    void expiredTest() {
+        logger.info("starting.. Thread ID: {}", Thread.currentThread().getId());
         for (long i = 0; i < 1; i++) {
             restTemplate.postForObject(WsAddressConstants.selfExpiredFullUrl + "startInteger", new SelfExpiringData(i + 1, i + 20, Duration.ofSeconds((i+1) * 10)), Void.class);
             restTemplate.postForObject(WsAddressConstants.selfExpiredFullUrl + "removeInteger", i + 1, Void.class);

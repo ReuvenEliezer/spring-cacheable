@@ -1,21 +1,22 @@
-package app;
-
+package com.cache;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
 @ComponentScan(basePackages = {
-        "controllers",
-        "services",
-        "configuration"
+        "com.cache.controllers",
+        "com.cache.services",
+        "com.cache.configuration"
 })
-public class TestApp extends SpringBootServletInitializer {
+@EnableCaching
+public class CacheApp {
 
     public static void main(String[] args) {
-        SpringApplication.run(TestApp.class, args);
+        SpringApplication.run(CacheApp.class, args);
     }
 
 }

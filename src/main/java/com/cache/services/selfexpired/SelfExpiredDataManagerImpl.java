@@ -1,19 +1,20 @@
-package services.selfexpired;
+package com.cache.services.selfexpired;
 
-import entities.SelfExpiringData;
-import org.apache.log4j.Logger;
+import com.cache.controllers.RestExamplesController;
+import com.cache.entities.SelfExpiringData;
+import jakarta.annotation.PostConstruct;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.time.Duration;
 
 @Component
 public class SelfExpiredDataManagerImpl implements SelfExpiredDataManager {
-
-    private static final Logger logger = Logger.getLogger(SelfExpiredDataManagerImpl.class.getName());
+    private static final Logger logger = LogManager.getLogger(SelfExpiredDataManagerImpl.class);
 
     private SelfExpiringMapImpl<Long, String> stringSelfExpiringMapImpl = null;
     private SelfExpiringMapImpl<Long, Integer> integerSelfExpiringMapImpl = null;
@@ -25,7 +26,7 @@ public class SelfExpiredDataManagerImpl implements SelfExpiredDataManager {
     private ApplicationEventPublisher publisher;
 
     @PostConstruct
-    public void start() {
+    void start() {
         stringSelfExpiringMapImpl = new SelfExpiringMapImpl<>(Duration.ofSeconds(10), taskScheduler, publisher);
         integerSelfExpiringMapImpl = new SelfExpiringMapImpl<>(Duration.ofSeconds(10), taskScheduler, publisher);
     }

@@ -1,27 +1,23 @@
-package Tests;
+package com.cache;
 
-import app.TestApp;
-import org.apache.log4j.Logger;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import com.cache.services.CacheService;
+import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
-import services.CacheService;
 import utils.WsAddressConstants;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = TestApp.class)
-public class RestExamplesTest {
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = CacheApp.class)
+class RestExamplesTest {
 
-    private static final Logger logger = Logger.getLogger(RestExamplesTest.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(RestExamplesTest.class);
 //    private static final String CACHE_NAMES = "MAP_CACHE";
+
 
 
     @Autowired
@@ -39,10 +35,8 @@ public class RestExamplesTest {
 //        restTemplate = new RestTemplate();
 //    }
 
-    private Map<Integer, String> map = new HashMap<>();
-
     @Test
-    public void cacheTest() {
+    void cacheTest() {
         cacheService.addValue(1, "a");
         String value1 = cacheService.getValue(1);
         String value2 = cacheService.getValue(1);
@@ -67,7 +61,7 @@ public class RestExamplesTest {
 //    }
 
     @Test
-    public void PostTest() {
+    void postTest() {
         restTemplate.postForObject(WsAddressConstants.restExamplesFullUrl + "post", "ss", Void.class);
         String string1 = restTemplate.postForObject(WsAddressConstants.restExamplesFullUrl + "post/2", "string1", String.class);
         logger.debug(string1);
@@ -80,7 +74,7 @@ public class RestExamplesTest {
         get = restTemplate.getForObject(WsAddressConstants.restExamplesFullUrl + "get/value", String.class);
         logger.debug(get);
         List<Double> result = restTemplate.getForObject(WsAddressConstants.restExamplesFullUrl + "?latitude=33&longitude=34", List.class);
-        logger.debug(result);
+        logger.info("{}",result);
     }
 
 }

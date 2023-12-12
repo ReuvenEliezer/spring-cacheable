@@ -1,6 +1,7 @@
-package services.selfexpired;
+package com.cache.services.selfexpired;
 
-import entities.SelfExpiringData;
+
+import com.cache.entities.SelfExpiringData;
 
 public interface SelfExpiredDataManager {
 

@@ -22,9 +22,10 @@
  * SOFTWARE.
  */
 
-package services.selfexpired;
+package com.cache.services.selfexpired;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.TaskScheduler;
 
@@ -43,7 +44,7 @@ import java.util.concurrent.*;
  */
 public class SelfExpiringMapImpl<K, V> implements SelfExpiringMap<K, V> {
 
-    private static final Logger logger = Logger.getLogger(SelfExpiringMapImpl.class.getName());
+    private static final Logger logger = LogManager.getLogger(SelfExpiringMapImpl.class);
 
     private ApplicationEventPublisher publisher;
 

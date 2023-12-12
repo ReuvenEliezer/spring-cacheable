@@ -1,41 +1,42 @@
-package Tests;
+package com.cache;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.springframework.util.StopWatch;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class Tests {
+import static java.lang.Thread.sleep;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+class Tests {
 
 
     @Test
-    public void StopWatch() throws InterruptedException {
+    void stopWatchTest() throws InterruptedException {
         StopWatch stopWatch = new StopWatch("My Stop Watch");
 
         stopWatch.start("initializing");
-        Thread.sleep(2000); // simulated work
+        sleep(2000); // simulated work
         stopWatch.stop();
 
         stopWatch.start("processing");
-        Thread.sleep(5000); // simulated work
+        sleep(5000); // simulated work
         stopWatch.stop();
 
         stopWatch.start("finalizing");
-        Thread.sleep(3000); // simulated work
+        sleep(3000); // simulated work
         stopWatch.stop();
 
         System.out.println(stopWatch.prettyPrint());
     }
 
     @Test
-    public void switchTest() {
+    void switchTest() {
         RuleActionType ruleActionType = RuleActionType.IrrigationStart;
 
         for (int i = 0; i < 2; i++) {
@@ -57,7 +58,7 @@ public class Tests {
     }
 
     @Test
-    public void stream1() {
+    void stream1() {
         ConditionValue conditionValue1 = new ConditionValue(2, 2d);
         ConditionValue conditionValue2 = new ConditionValue(2, 3d);
         ConditionValue conditionValue3 = new ConditionValue(2, 2d);
@@ -78,7 +79,7 @@ public class Tests {
     }
 
     @Test
-    public void stream() {
+    void stream() {
         ConditionValue conditionValue1 = new ConditionValue(1, 2d);
         ConditionValue conditionValue2 = new ConditionValue(1, 2d);
         ConditionValue conditionValue3 = new ConditionValue(1, 2d);
@@ -88,7 +89,7 @@ public class Tests {
         conditionValues.add(conditionValue3);
 
         boolean valid = isValid(conditionValues);
-        Assert.assertFalse(valid);
+        assertFalse(valid);
         System.out.println("valid result = " + valid);
 
 
@@ -99,7 +100,7 @@ public class Tests {
         conditionValues.add(conditionValue2);
 
         valid = isValid(conditionValues);
-        Assert.assertFalse(valid);
+        assertFalse(valid);
         System.out.println("valid result = " + valid);
 
         conditionValues.clear();
@@ -109,7 +110,7 @@ public class Tests {
         conditionValues.add(conditionValue2);
 
         valid = isValid(conditionValues);
-        Assert.assertTrue(valid);
+        assertTrue(valid);
         System.out.println("valid result = " + valid);
 
         conditionValues.clear();
@@ -119,7 +120,7 @@ public class Tests {
         conditionValues.add(conditionValue2);
 
         valid = isValid(conditionValues);
-        Assert.assertTrue(valid);
+        assertTrue(valid);
         System.out.println("valid result = " + valid);
 
 
@@ -132,7 +133,7 @@ public class Tests {
         conditionValues.add(conditionValue3);
 
         valid = isValid(conditionValues);
-        Assert.assertTrue(valid);
+        assertTrue(valid);
         System.out.println("valid result = " + valid);
 
 
@@ -145,7 +146,7 @@ public class Tests {
         conditionValues.add(conditionValue3);
 
         valid = isValid(conditionValues);
-        Assert.assertTrue(valid);
+        assertTrue(valid);
         System.out.println("valid result = " + valid);
 
         conditionValues.clear();
@@ -157,7 +158,7 @@ public class Tests {
         conditionValues.add(conditionValue3);
 
         valid = isValid(conditionValues);
-        Assert.assertTrue(valid);
+        assertTrue(valid);
         System.out.println("valid result = " + valid);
     }
 

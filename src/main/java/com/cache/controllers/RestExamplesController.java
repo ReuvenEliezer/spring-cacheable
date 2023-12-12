@@ -1,12 +1,11 @@
-package controllers;
+package com.cache.controllers;
 
-import entities.SelfExpiringData;
-import org.apache.log4j.Logger;
-import org.springframework.http.ResponseEntity;
+import jakarta.websocket.server.PathParam;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.web.bind.annotation.*;
 import utils.WsAddressConstants;
 
-import javax.websocket.server.PathParam;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,9 +13,9 @@ import java.util.List;
 @RequestMapping(WsAddressConstants.restExamplesLogicalUrl)
 public class RestExamplesController {
 
-    private static final Logger logger = Logger.getLogger(RestExamplesController.class.getName());
+    private static final Logger logger = LogManager.getLogger(RestExamplesController.class);
 
-    @RequestMapping(method = RequestMethod.POST, value = "post")
+    @PostMapping(value = "post")
     public void postExample(@RequestBody String s) {
         logger.debug(s);
     }

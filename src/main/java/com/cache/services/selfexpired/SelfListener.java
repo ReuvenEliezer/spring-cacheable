@@ -1,13 +1,14 @@
-package services.selfexpired;
+package com.cache.services.selfexpired;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 @Component
 public class SelfListener {
 
-    private static final Logger logger = Logger.getLogger(SelfListener.class.getName());
+    private static final Logger logger = LogManager.getLogger(SelfListener.class);
 
     @EventListener
     public void selfListener(String string) {

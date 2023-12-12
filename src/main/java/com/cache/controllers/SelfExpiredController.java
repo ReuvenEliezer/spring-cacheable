@@ -1,12 +1,12 @@
-package controllers;
+package com.cache.controllers;
 
-import entities.SelfExpiringData;
+import com.cache.entities.SelfExpiringData;
+import com.cache.services.selfexpired.SelfExpiredDataManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import services.selfexpired.SelfExpiredDataManager;
 import utils.WsAddressConstants;
 
 @RestController
