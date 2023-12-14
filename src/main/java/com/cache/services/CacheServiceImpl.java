@@ -16,13 +16,19 @@ public class CacheServiceImpl implements CacheService {
     private static final String CACHE_NAMES = "MAP_CACHE";
     private Map<Integer, String> map = new HashMap<>();
 
+    private final DemoService demoService;
+
 
     @Resource
     private CacheService self;
 
+    public CacheServiceImpl(DemoService demoService) {
+        this.demoService = demoService;
+    }
+
     @Override
     public void addValue(Integer key, String value) {
-        map.put(key,value);
+        map.put(key, value);
         self.cacheEvict();
     }
 
@@ -35,7 +41,8 @@ public class CacheServiceImpl implements CacheService {
     @Override
     @Cacheable(cacheNames = {CACHE_NAMES})
     public String getValue(Integer key) {
-        logger.debug("return value");
-        return map.get(key);
+        logger.info("return value");
+        return demoService.getValue(key);
+//        return map.get(key);
     }
 }
