@@ -8,4 +8,9 @@ public class DemoServiceImpl implements DemoService {
     public String getValue(Integer key) {
         return "1";
     }
+
+    @Override
+    public String getValue(String key) {
+        return "1";
+    }
 }

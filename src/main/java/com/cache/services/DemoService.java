@@ -4,4 +4,6 @@ public interface DemoService {
 
     String getValue(Integer key);
 
+    String getValue(String key);
+
 }

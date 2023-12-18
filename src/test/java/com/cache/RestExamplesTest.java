@@ -16,7 +16,7 @@ import java.util.List;
 class RestExamplesTest {
 
     private static final Logger logger = LoggerFactory.getLogger(RestExamplesTest.class);
-//    private static final String CACHE_NAMES = "MAP_CACHE";
+//    private static final String CACHE_NAMES = "MY_CACHE";
 
 
 
@@ -37,10 +37,10 @@ class RestExamplesTest {
 
     @Test
     void cacheTest() {
-        cacheService.addValue(1, "a");
+        cacheService.addValueAndCleanCache(1, "a");
         String value1 = cacheService.getValue(1);
         String value2 = cacheService.getValue(1);
-        cacheService.addValue(1, "a");
+        cacheService.addValueAndCleanCache(1, "a");
         String value3 = cacheService.getValue(1);
 
     }
