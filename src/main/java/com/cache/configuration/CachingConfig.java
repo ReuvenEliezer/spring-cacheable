@@ -124,7 +124,7 @@ public class CachingConfig {
         ResourcePoolsBuilder resourcePoolsBuilder = ResourcePoolsBuilder
                 .heap(3)
 //                .withReplacing(new SizedResourcePoolImpl<>())
-//                .offheap(10, MemoryUnit.MB)
+                .offheap(1, MemoryUnit.MB) //min value is 1MB
 //                .disk(100, MemoryUnit.MB, false)
                 ;
         ExpiryPolicy<Object, Object> expiryPolicy = createExpiryPolicy(Duration.ofMinutes(10), Duration.ofMinutes(5));

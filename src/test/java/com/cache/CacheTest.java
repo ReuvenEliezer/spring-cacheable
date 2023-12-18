@@ -2,6 +2,7 @@ package com.cache;
 
 import com.cache.services.CacheService;
 import com.cache.services.DemoService;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -9,9 +10,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 
-import java.time.Duration;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -27,6 +28,14 @@ class CacheTest {
 
     @Autowired
     private CacheManager cacheManager;
+
+    @AfterEach
+    void tearDown() {
+        cacheManager.getCacheNames()
+                .forEach(cacheName -> Objects.requireNonNull(cacheManager.getCache(cacheName))
+                        .clear());
+    }
+
     @Test
     void getValue() {
         /**
