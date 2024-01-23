@@ -1,5 +1,6 @@
 package com.cache.controllers;
 
+import com.cache.entities.Data;
 import jakarta.websocket.server.PathParam;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,23 +21,29 @@ public class RestExamplesController {
         logger.debug(s);
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "post/{id}")
+    @PostMapping(value = "post/{id}")
     public String concatenate(@PathVariable("id") String id, @RequestBody String string) {
         return id + string;
     }
 
-    @RequestMapping(method = RequestMethod.GET, path = "get")
+    @PostMapping(value = "data")
+    public String concatenate(@RequestBody Data string) {
+        return "ok";
+    }
+
+
+    @GetMapping(path = "get")
     public String postExample() {
         return "s";
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "get/{valueType}")
+    @GetMapping(value = "get/{valueType}")
 //    @RequestMapping(method = RequestMethod.GET, value = "/{mcuId:.+}")
     public String postExample1(@PathVariable("valueType") String valueType) {
         return valueType;
     }
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping()
     public List<Double> getHourlyForecasts(@PathParam("latitude") Double latitude, @PathParam("longitude") Double longitude) {
         List<Double> result = new ArrayList<>();
         result.add(latitude);

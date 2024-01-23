@@ -1,15 +1,21 @@
 package com.cache;
 
+import com.cache.entities.Data;
 import com.cache.services.CacheService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 import utils.WsAddressConstants;
 
 import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = CacheApp.class)
@@ -29,11 +35,43 @@ class RestExamplesTest {
     @Autowired
     private RestTemplate restTemplate;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
 //    @BeforeClass
 //    public static void beforeClass() {
 //        TestApp.main(new String[]{});
 //        restTemplate = new RestTemplate();
 //    }
+
+    @Test
+    void restTemplateTest() throws JsonProcessingException {
+        Data data = new Data("d", "value");
+        String s = restTemplate.postForObject(WsAddressConstants.restExamplesFullUrl + "data", data, String.class);
+        assertThat(s).isEqualTo("ok");
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+//        HttpEntity<Data> httpEntity = new HttpEntity<>(data, headers);
+        String dataStr = objectMapper.writeValueAsString(data);
+        HttpEntity<String> httpEntity = new HttpEntity<>(dataStr, headers);
+        ResponseEntity<String> responseEntity = restTemplate.exchange(
+                WsAddressConstants.restExamplesFullUrl + "data",
+                HttpMethod.POST,
+                httpEntity,
+                String.class
+        );
+        assertThat(responseEntity.getBody()).isEqualTo("ok");
+
+        String result = restTemplate.postForObject(WsAddressConstants.restExamplesFullUrl + "data", data, String.class);
+        assertThat(result).isEqualTo("ok");
+
+
+        HttpEntity<String> requestEntity = new HttpEntity<>(dataStr, headers);
+        String result1 = restTemplate.postForObject(WsAddressConstants.restExamplesFullUrl + "data", requestEntity, String.class);
+        assertThat(result1).isEqualTo("ok");
+    }
 
     @Test
     void cacheTest() {
