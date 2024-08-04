@@ -4,6 +4,7 @@ import jakarta.annotation.Resource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -15,9 +16,9 @@ import java.util.Map;
 public class CacheServiceImpl implements CacheService {
     private static final Logger logger = LogManager.getLogger(CacheServiceImpl.class);
     private static final String CACHE_NAME = "MY_CACHE";
-    private Map<Integer, String> map = new HashMap<>();
+    private static final Map<Integer, String> map = new HashMap<>();
 
-    private Map<Integer, List<String>> map1 = new HashMap<>();
+    private static final Map<Integer, List<String>> map1 = new HashMap<>();
 
     private final DemoService demoService;
 
@@ -63,16 +64,37 @@ public class CacheServiceImpl implements CacheService {
     }
 
     @Override
+    @CachePut(cacheNames = {CACHE_NAME},
+            cacheManager = "jCacheCacheManager",
+            key = "#key1.concat('-').concat(#key2)"
+    )
+    public List<String> putValue(String key1, String key2, List<String> values) {
+        logger.info("put values {} to key {}", values, key1 + "-" + key2);
+        return demoService.putValue(key1 + "-" + key2, values);
+    }
+
+    @Override
+    @CacheEvict(cacheNames = {CACHE_NAME},
+            cacheManager = "jCacheCacheManager",
+            key = "#key1.concat('-').concat(#key2)"
+    )
+    public String removeKey(String key1, String key2) {
+        logger.info("remove key value {}", key1 + "-" + key2);
+        return demoService.removeKey(key1 + "-" + key2);
+    }
+
+    @Override
     @Cacheable(
             value = CACHE_NAME,
             cacheManager = "jCacheCacheManager",
             key = "#key1.concat('-').concat(#key2)"
     )
     public List<String> getValue2(String key1, String key2) {
-        logger.info("return value");
         String key = key1.concat("-").concat(key2);
-        demoService.getValue(key);
-        return map1.get(key);
+        List<String> value = demoService.getValue(key);
+        logger.info("return values {}", value);
+       return value;
+//        return map1.get(key);
     }
 
     @Override

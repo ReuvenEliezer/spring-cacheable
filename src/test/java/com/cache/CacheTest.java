@@ -1,8 +1,13 @@
 package com.cache;
 
+import com.cache.entities.cache.EhCacheConfigData;
+import com.cache.services.EhCacheCreator;
 import com.cache.services.CacheService;
 import com.cache.services.DemoService;
+import org.ehcache.config.units.EntryUnit;
+import org.ehcache.jsr107.EhcacheCachingProvider;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -11,10 +16,14 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 
+import javax.cache.Caching;
+import java.time.Duration;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
+import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -28,15 +37,44 @@ class CacheTest {
     private CacheService cacheService;
 
     @Autowired
+    private EhCacheCreator<Integer, String> ehCacheCreator;
+
+    @Autowired
+    private EhCacheCreator<String, List<String>> ehCacheCreator2;
+
+    @Autowired
     @Qualifier("jCacheCacheManager")
     private CacheManager cacheManager;
 
+    @BeforeEach
+    void init() {
+        reset(demoService);
+        EhCacheConfigData<Integer, String> myCache1ConfigData = new EhCacheConfigData<>(
+                "MY_CACHE",
+                Integer.class, String.class,
+                100L, EntryUnit.ENTRIES,
+                Duration.ofSeconds(5));
+        ehCacheCreator.createCache(myCache1ConfigData);
+    }
+
     @AfterEach
     void tearDown() {
-        cacheManager.getCacheNames()
-                .forEach(cacheName -> Objects.requireNonNull(cacheManager.getCache(cacheName))
-                        .clear());
+//        cacheManager.getCacheNames()
+//                .forEach(cacheName -> Objects.requireNonNull(cacheManager.getCache(cacheName))
+//                        .clear());
+        destroyCaches();
+        reset(demoService);
     }
+
+    private void destroyCaches() {
+        EhcacheCachingProvider ehcacheCachingProvider = (EhcacheCachingProvider) Caching.getCachingProvider(EhcacheCachingProvider.class.getName());
+        javax.cache.CacheManager jCacheManager = ehcacheCachingProvider.getCacheManager();
+        for (String cacheName : jCacheManager.getCacheNames()) {
+            jCacheManager.destroyCache(cacheName);
+        }
+//        jCacheManager.close();
+    }
+
 
     @Test
     void getValue() {
@@ -86,40 +124,30 @@ class CacheTest {
         org.springframework.cache.Cache cache = cacheManager.getCache(next);
     }
 
-    @Test
-    void getValue4() {
-        List<String> value2 = cacheService.getValue2("1", "1");
-        List<String> value21 = cacheService.getValue2("1", "1");
-        verify(demoService, times(1)).getValue("1-1");
-    }
-
 
     @Test
-    void getValue1() {
-        cacheService.addValue(1,"1");
-        cacheService.addValue(2,"2");
-        cacheService.addValue(3,"3");
-        cacheService.addValue(4,"4");
-        cacheService.addValue(5,"5");
-        cacheService.addValue(6,"6");
+    void cachePutAndRemovalValueTest() {
+        destroyCaches();
+        EhCacheConfigData<String, List<String>> myCache2ConfigData = new EhCacheConfigData<>(
+                "MY_CACHE",
+                String.class, (Class<List<String>>) ((Class) List.class),
+                100L, EntryUnit.ENTRIES,
+                Duration.ofSeconds(5)
+        );
+        ehCacheCreator2.createCache(myCache2ConfigData);
 
-        cacheService.getValue(1);
-        cacheService.getValue(2);
-        cacheService.getValue(3);
-        cacheService.getValue(3);
-        cacheService.getValue(3);
-        cacheService.getValue(3);
-        cacheService.getValue(3);
-        cacheService.getValue(3);
-        cacheService.getValue(3);
-        cacheService.getValue(3);
-        cacheService.getValue(4);
-        cacheService.getValue(5);
-        cacheService.getValue(6);
-        Cache mapCache = cacheManager.getCache("MY_CACHE");
-        String valueWrapper1 = mapCache.get(1, String.class);
-        String valueWrapper2 = mapCache.get(2, String.class);
-        String valueWrapper3 = mapCache.get(3, String.class);
+        String key1 = "1";
+        String key2 = "2";
+
+        List<String> value = cacheService.getValue2(key1, key2);
+        List<String> put = cacheService.putValue(key1, key2, List.of("1"));
+        List<String> get1_nonEntered = cacheService.getValue2(key1, key2);
+        verify(demoService, times(1)).putValue(key1 + "-" + key2, List.of("1"));
+        verify(demoService, times(1)).getValue(key1 + "-" + key2);
+        String removalKey = cacheService.removeKey(key1, key2);
+        verify(demoService, times(1)).removeKey(key1 + "-" + key2);
+        List<String> get2_After_removal_Entered = cacheService.getValue2(key1, key2);
+        verify(demoService, times(2)).getValue(key1 + "-" + key2);
     }
 
 

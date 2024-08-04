@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>spring-cacheable</groupId>
-    <artifactId>spring-cacheable-artifact</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <artifactId>spring-cacheable</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -16,7 +16,6 @@
 
 
     <dependencies>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>

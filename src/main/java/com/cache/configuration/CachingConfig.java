@@ -86,32 +86,10 @@ public class CachingConfig {
     @Bean
     public CacheManager jCacheCacheManager() {
         Map<String, CacheConfiguration<?, ?>> cacheMap = new HashMap<>();
-
-        ResourcePoolsBuilder resourcePoolsBuilder = ResourcePoolsBuilder
-                .heap(3)
-                .offheap(1, MemoryUnit.MB) //min value is 1MB
-//                .disk(100, MemoryUnit.MB, false)
-                ;
-        ExpiryPolicy<Object, Object> expiryPolicy = createExpiryPolicy(Duration.ofMinutes(10), Duration.ofMinutes(5));
-
-        CacheConfiguration<Object, Object> cacheConfiguration = CacheConfigurationBuilder
-                .newCacheConfigurationBuilder(Object.class, Object.class, resourcePoolsBuilder)
-                .withExpiry(expiryPolicy)
-                .build();
-        cacheMap.put(MY_CACHE, cacheConfiguration);
         EhcacheCachingProvider ehcacheCachingProvider = (EhcacheCachingProvider) Caching.getCachingProvider(EhcacheCachingProvider.class.getName());
         DefaultConfiguration defaultConfiguration = new DefaultConfiguration(cacheMap, ehcacheCachingProvider.getDefaultClassLoader());
         javax.cache.CacheManager cacheManager = ehcacheCachingProvider.getCacheManager(ehcacheCachingProvider.getDefaultURI(), defaultConfiguration);
         return new JCacheCacheManager(cacheManager);
-    }
-
-    private static ExpiryPolicy<Object, Object> createExpiryPolicy(Duration timeToLive, Duration timeToIdle) {
-        return ExpiryPolicyBuilder
-                .expiry()
-                .create(timeToLive)
-                .access(timeToIdle)
-//                .update(Duration.ofMinutes(30))
-                .build();
     }
 
 
