@@ -1,5 +1,5 @@
 server:
   port: 8080
-spring:
-  main:
-    allow-circular-references: true # for @Resources in CacheServiceImpl
+#spring:
+#  main:
+#    allow-circular-references: true # for @Resources in CacheServiceImpl or mark it additional with a @Lazy InitBean or move it the Cache logic to an external interface

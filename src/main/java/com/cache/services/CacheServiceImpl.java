@@ -6,6 +6,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -24,6 +25,7 @@ public class CacheServiceImpl implements CacheService {
 
 
     @Resource
+    @Lazy
     private CacheService self;
 
     public CacheServiceImpl(DemoService demoService) {
