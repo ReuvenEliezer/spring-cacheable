@@ -1,5 +1,6 @@
 package com.cache;
 
+import com.cache.entities.Data;
 import com.cache.entities.cache.EhCacheConfigData;
 import com.cache.services.EhCacheCreator;
 import com.cache.services.CacheService;
@@ -20,9 +21,8 @@ import javax.cache.Caching;
 import java.time.Duration;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -148,6 +148,32 @@ class CacheTest {
         verify(demoService, times(1)).removeKey(key1 + "-" + key2);
         List<String> get2_After_removal_Entered = cacheService.getValue2(key1, key2);
         verify(demoService, times(2)).getValue(key1 + "-" + key2);
+    }
+
+    @Test
+    void cachePutAndRemovalObjTest() {
+        destroyCaches();
+        EhCacheConfigData<String, List<String>> myCache2ConfigData = new EhCacheConfigData<>(
+                "CACHE_NAME_OBJECT",
+                String.class, (Class<List<String>>) ((Class) List.class),
+                100L, EntryUnit.ENTRIES,
+                Duration.ofMinutes(5)
+        );
+        javax.cache.Cache<String, List<String>> cache = ehCacheCreator2.createCache(myCache2ConfigData);
+        String key1 = "1";
+        String key2 = "2";
+
+        List<String> value = cacheService.getByData(new Data(key1, key2));
+        List<String> value1 = cacheService.getByData(new Data(key1, key2));
+        verify(demoService, times(1)).getValue(key1);
+
+        List<String> strings = cache.get(key1 + "-" + key2);
+        Cache cacheNameObject = cacheManager.getCache("CACHE_NAME_OBJECT");
+        Cache.ValueWrapper valueWrapper = cacheNameObject.get(key1 + "-" + key2);
+        Object o = valueWrapper.get();
+        assertThat(strings).isNotEmpty();
+        assertThat(strings).isEqualTo(value);
+
     }
 
 

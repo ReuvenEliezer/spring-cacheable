@@ -1,9 +1,7 @@
 package com.cache.services;
 
 
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
+import com.cache.entities.Data;
 
 import java.util.List;
 
@@ -26,4 +24,6 @@ public interface CacheService {
     List<String> getValue1(Integer key);
 
     void cacheEvict();
+
+    List<String> getByData(Data data);
 }

@@ -1,8 +1,12 @@
 package com.cache.services;
 
+import com.cache.entities.Data;
 import jakarta.annotation.Resource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -17,12 +21,15 @@ import java.util.Map;
 public class CacheServiceImpl implements CacheService {
     private static final Logger logger = LogManager.getLogger(CacheServiceImpl.class);
     private static final String CACHE_NAME = "MY_CACHE";
+    private static final String CACHE_NAME_OBJECT = "CACHE_NAME_OBJECT";
     private static final Map<Integer, String> map = new HashMap<>();
 
     private static final Map<Integer, List<String>> map1 = new HashMap<>();
 
     private final DemoService demoService;
 
+    @Autowired
+    CacheManager cacheManager;
 
     @Resource
     @Lazy
@@ -95,7 +102,7 @@ public class CacheServiceImpl implements CacheService {
         String key = key1.concat("-").concat(key2);
         List<String> value = demoService.getValue(key);
         logger.info("return values {}", value);
-       return value;
+        return value;
 //        return map1.get(key);
     }
 
@@ -105,6 +112,14 @@ public class CacheServiceImpl implements CacheService {
         logger.info("return value");
         demoService.getValue(key);
         return map1.get(key);
+    }
+
+    @Cacheable(value = CACHE_NAME_OBJECT, cacheManager = "jCacheCacheManager", key = "#data.key().concat('-').concat(#data.value())", sync = true)
+    @Override
+    public List<String> getByData(Data data) {
+        List<String> value = demoService.getValue(data.key());
+        logger.info("return values {}", value);
+        return List.of("1");
     }
 
 }
